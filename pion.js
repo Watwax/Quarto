@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 
-
+// Enumeration of caracteristics of pawn
 const enumPawnColor = {
     BLACK: "b",
     WHITE: "w"
@@ -59,7 +59,7 @@ export class Pion {
                     object.scale.set(this.scale, this.scale, this.scale);
                     object.position.set(...this.position);
 
-                    // Sauvegarde des matériaux d'origine
+                    // Save original color
                     object.traverse((child) => {
                         if (child.isMesh) {
                             this.originalMaterials.push({
@@ -69,8 +69,7 @@ export class Pion {
                         }
                     });
 
-
-                    // Ajout de méthodes pour surligner
+                    // To add color when hover
                     object.userData.highlight = () => {
                         object.traverse((child) => {
                             if (child.isMesh && !this.placed) {
@@ -80,7 +79,7 @@ export class Pion {
                         });
                     };
 
-
+                    // To restore the original color
                     object.userData.restoreColor = () => {
                         this.originalMaterials.forEach((entry) => {
                             entry.mesh.material = entry.material.clone();

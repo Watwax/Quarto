@@ -5,8 +5,11 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Pion } from './pion.js';
 import { Case } from './case.js';
 
+// Info about height and width
 const CASE = 3.2;
 const PLATE_HEIGHT = 7.6;
+
+// Array of coordinates
 const P_C = [
     [[1,-1], [4.2,-1], [7.4,-1], [10.6,-1]],
     [[1,-4.2], [4.2,-4.2], [7.4,-4.2], [10.6,-4.2]],
@@ -33,6 +36,8 @@ const N_C = [
     [25,10],
     [25,15],
 ]
+
+// List of pawn
 const pawnNames = [
     'brbh',
     'brbn',
@@ -77,70 +82,66 @@ const dirLight = new THREE.DirectionalLight(0xffffff, 3);
 dirLight.position.set(5, 10, 5);
 scene.add(dirLight);
 
+// Camera controllers (DEV : to remove or modify later)
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(P_C[2][2][0], PLATE_HEIGHT, P_C[2][2][1]);  // Regarder vers le centre de la scène
+controls.target.set(P_C[2][2][0], PLATE_HEIGHT, P_C[2][2][1]); 
 controls.update();
 
-// Surligner
+// To hover pawn and case
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let hoveredPion = null;
 let hoveredCase = null;
+let selectedPion = null;
 
+// To get mouse position
 window.addEventListener('mousemove', (event) => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 });
 
-
+// Add plate into scene
 addOBJwithMTL('plateau', [0,0,0], 4);
 
+// List of objects for the game
 const pionList = [];    
 const caseList = [];
 
+// Function to shuffle the array of name
 function shuffle(array) {
   let currentIndex = array.length;
 
-  // While there remain elements to shuffle...
+  // While there remain elements to shuffle
   while (currentIndex != 0) {
 
-    // Pick a remaining element...
+    // Pick a remaining element
     let randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
 
-    // And swap it with the current element.
+    // And swap it with the current element
     [array[currentIndex], array[randomIndex]] = [
       array[randomIndex], array[currentIndex]];
   }
 }
 
+// Add pawns
 window.addEventListener('load', (event) => {
     shuffle(pawnNames);
     pawnNames.forEach((pawnName, index) => {
-        //console.log(index, pawnName);
         let pion = new Pion(scene, 'pion_' + pawnName, N_C[index], 1, 0);
         pionList.push(pion);
     });
+
+    for (let i = 0; i < P_C.length; i++) {
+        for (let j = 0; j < P_C[i].length; j++) {
+            const c = new Case(scene, P_C[i][j], + 9.65, 3);
+            caseList.push(c);
+        }
+    }
 }); 
 
-// const pion1 = new Pion(scene, 'pion_wssh', N_C[12], 1, 0);
-// const pion12 = new Pion(scene, 'pion_wssh', N_C[13], 1, 0);
-// const pion13 = new Pion(scene, 'pion_wssh', N_C[14], 1, 0);
-// const pion14 = new Pion(scene, 'pion_wssh', N_C[15], 1, 0);
-// const pion2 = new Pion(scene, 'pion_bssh', N_C[10], 1, 0);
-// const pion3 = new Pion(scene, 'pion_brbh', N_C[11], 1, 0);
 
-// pionList.push(pion1, pion2, pion3, pion12, pion13, pion14);
-
-for (let i = 0; i < P_C.length; i++) {
-    for (let j = 0; j < P_C[i].length; j++) {
-        const c = new Case(scene, P_C[i][j], + 9.65, 3);
-        caseList.push(c);
-    }
-}
-
-let selectedPion = null;
-
+// Function to animate the scene
 function animate() {
 
     raycaster.setFromCamera(mouse, camera);
@@ -161,19 +162,15 @@ function animate() {
     if (intersects.length > 0) {
         const obj = intersects[0].object;
 
-    // 🎯 Si c’est une CASE
     if (obj.userData.isCase) {
         const c = obj.userData.case;
 
-        // ❌ case occupée → pas de surlignage
         if (c.occupiedBy !== null) {
-            // enleve un surlignage précédent éventuel
             if (hoveredCase && hoveredCase !== c) hoveredCase.unhighlight();
             hoveredCase = null;
             return;
         }
 
-        // ✔ case libre → surligner
         c.highlight();
 
         if (hoveredCase && hoveredCase !== c) hoveredCase.unhighlight();
@@ -181,7 +178,6 @@ function animate() {
         hoveredSomething = true;
 
         } else {
-            // 🎯 Sinon c’est un PION
             const pion = obj.parent;
             hoveredSomething = true;
 
@@ -193,7 +189,6 @@ function animate() {
         }
     }
 
-    // Rien survolé → on reset
     if (!hoveredSomething) {
         if (hoveredPion) hoveredPion.userData.restoreColor();
         hoveredPion = null;
@@ -207,6 +202,7 @@ function animate() {
 }
 renderer.setAnimationLoop(animate);
 
+// function to add OBJ with an MTL (only for plate, to remove)
 function addOBJwithMTL(objName, coordinates = [0, 0, 0], scale = 1) {
     const mtlLoader = new MTLLoader();
     mtlLoader.setPath('models/');
@@ -231,6 +227,7 @@ function addOBJwithMTL(objName, coordinates = [0, 0, 0], scale = 1) {
     });
 }
 
+// To select a pawn and a case to play
 window.addEventListener('mousedown', () => {
     raycaster.setFromCamera(mouse, camera);
 
@@ -243,11 +240,9 @@ window.addEventListener('mousedown', () => {
 
     const obj = intersects[0].object;
 
-    // 👉 Sélection d’un pion en réserve uniquement
     if (obj.parent && pionList.some(p => p.object3D === obj.parent)) {
         selectedPion = pionList.find(p => p.object3D === obj.parent);
 
-        // Le pion placé ne peut pas être sélectionné
         if (selectedPion.placed === true) {
             selectedPion = null;
             return;
@@ -257,25 +252,18 @@ window.addEventListener('mousedown', () => {
         return;
     }
 
-
-    // 👉 Déplacement du pion sélectionné vers une case
     if (selectedPion && obj.userData.isCase) {
         const targetCase = obj.userData.case;
 
-        // ❌ Case occupée → rien ne se passe
         if (targetCase.occupiedBy !== null) {
             console.log("Cette case est déjà occupée !");
             return;
         }
 
-        // ✔ déplacer
         selectedPion.moveTo(targetCase.coord, PLATE_HEIGHT);
         selectedPion.placed = true;
 
-        // ✔ marquer la case comme occupée
         targetCase.occupiedBy = selectedPion;
-
-        // ✔ optionnel : stocker la case sur le pion
         selectedPion.onCase = targetCase;
 
         targetCase.unhighlight();
