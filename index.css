@@ -1,0 +1,11 @@
+body { 
+    margin: 0; 
+}
+
+#player {
+    position: absolute;
+    text-align: center;
+    top: 5px;
+    width: 100%;
+    font-size: 4em;
+}
