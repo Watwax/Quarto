@@ -241,12 +241,28 @@ window.addEventListener('mousedown', () => {
     const obj = intersects[0].object;
 
     if (obj.parent && pionList.some(p => p.object3D === obj.parent)) {
+
+        if(selectedPion != null) {
+            selectedPion.moveTo([selectedPion.position[0], selectedPion.position[2]], selectedPion.position[1]);
+        }
         selectedPion = pionList.find(p => p.object3D === obj.parent);
 
         if (selectedPion.placed === true) {
             selectedPion = null;
             return;
         }
+
+        selectedPion.moveTo([selectedPion.position[0], selectedPion.position[2]], selectedPion.position[1] + 5);
+
+        const divPlayer = document.getElementById('player');
+        if(divPlayer.innerText == "Joueur 1") {
+            console.log("Au joueur 2 de jouer");
+            divPlayer.innerText = "Joueur 2";
+        } else {
+            console.log("Au joueur 1 de jouer");
+            divPlayer.innerText = "Joueur 1";
+        }
+
 
         console.log("Pion sélectionné :", selectedPion.objName);
         return;
