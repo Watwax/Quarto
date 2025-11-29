@@ -5,7 +5,9 @@ body {
 #player {
     position: absolute;
     text-align: center;
-    top: 5px;
+    top: 5%;
     width: 100%;
-    font-size: 4em;
+    font-size: 2em;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
 }
