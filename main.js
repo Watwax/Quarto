@@ -358,6 +358,9 @@ function checkVictory(targetCase) {
             return true;
         }
     }
+    if(pionList.length == 0) {
+        displayDraw();
+    }
 
     return false;
 }
@@ -383,6 +386,14 @@ function displayWinner(result, winningGroup) {
             });
         }
     });
+
+    window.removeEventListener('mousedown', mouseEvent);
+}
+
+// Display draw
+function displayDraw() {
+    const ui = document.getElementById('player');
+    ui.innerText = `Match Nul`;
 
     window.removeEventListener('mousedown', mouseEvent);
 }
