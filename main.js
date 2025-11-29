@@ -4,6 +4,7 @@ import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Pion } from './pion.js';
 import { Case } from './case.js';
+import { GamePlayer } from './gamePlayer.js';
 
 // Info about height and width
 const CASE = 3.2;
@@ -93,6 +94,9 @@ const mouse = new THREE.Vector2();
 let hoveredPion = null;
 let hoveredCase = null;
 let selectedPion = null;
+
+// To manage game turn
+const game = new GamePlayer("player");
 
 // To get mouse position
 window.addEventListener('mousemove', (event) => {
@@ -254,15 +258,7 @@ window.addEventListener('mousedown', () => {
 
         selectedPion.moveTo([selectedPion.position[0], selectedPion.position[2]], selectedPion.position[1] + 5);
 
-        const divPlayer = document.getElementById('player');
-        if(divPlayer.innerText == "Joueur 1") {
-            console.log("Au joueur 2 de jouer");
-            divPlayer.innerText = "Joueur 2";
-        } else {
-            console.log("Au joueur 1 de jouer");
-            divPlayer.innerText = "Joueur 1";
-        }
-
+        game.onSelectPiece();
 
         console.log("Pion sélectionné :", selectedPion.objName);
         return;
@@ -285,6 +281,7 @@ window.addEventListener('mousedown', () => {
         targetCase.unhighlight();
 
         selectedPion = null;
+        game.onPlacePiece();
         return;
     }
 
