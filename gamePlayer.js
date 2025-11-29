@@ -31,7 +31,7 @@ export class GamePlayer {
         } 
         else if (this.state === "place") {
             this.ui.innerText = 
-                `${this.currentPlayer} : placez la pièce que ${this.opponentPlayer} vous a donnée`;
+                `${this.opponentPlayer} : placez la pièce que ${this.currentPlayer} vous a donnée`;
         }
     }
 
