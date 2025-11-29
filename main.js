@@ -166,20 +166,23 @@ function animate() {
     if (intersects.length > 0) {
         const obj = intersects[0].object;
 
-    if (obj.userData.isCase) {
-        const c = obj.userData.case;
+        if (obj.userData.isCase) {
+            const c = obj.userData.case;
 
-        if (c.occupiedBy !== null) {
+            if (c.occupiedBy !== null) {
+                if (hoveredCase && hoveredCase !== c) hoveredCase.unhighlight();
+                hoveredCase = null;
+                hoveredSomething = true;
+            } else {
+                c.highlight();
+                if (hoveredCase && hoveredCase !== c) hoveredCase.unhighlight();
+                hoveredCase = c;
+                hoveredSomething = true;
+            }
+
             if (hoveredCase && hoveredCase !== c) hoveredCase.unhighlight();
-            hoveredCase = null;
-            return;
-        }
-
-        c.highlight();
-
-        if (hoveredCase && hoveredCase !== c) hoveredCase.unhighlight();
-        hoveredCase = c;
-        hoveredSomething = true;
+            hoveredCase = c;
+            hoveredSomething = true;
 
         } else {
             const pion = obj.parent;
@@ -274,6 +277,7 @@ window.addEventListener('mousedown', () => {
 
         selectedPion.moveTo(targetCase.coord, PLATE_HEIGHT);
         selectedPion.placed = true;
+        pionList.splice(pionList.indexOf(selectedPion), 1);
 
         targetCase.occupiedBy = selectedPion;
         selectedPion.onCase = targetCase;
