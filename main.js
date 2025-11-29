@@ -248,7 +248,9 @@ function addOBJwithMTL(objName, coordinates = [0, 0, 0], scale = 1) {
 }
 
 // To select a pawn and a case to play
-window.addEventListener('mousedown', () => {
+window.addEventListener('mousedown', mouseEvent);
+
+function mouseEvent(){
     raycaster.setFromCamera(mouse, camera);
 
     const intersects = raycaster.intersectObjects(
@@ -299,8 +301,7 @@ window.addEventListener('mousedown', () => {
         checkVictory(targetCase);
         return;
     }
-
-});
+}
 
 // To play and win 
 function getGroupsToCheck(row, col) {
@@ -382,4 +383,6 @@ function displayWinner(result, winningGroup) {
             });
         }
     });
+
+    window.removeEventListener('mousedown', mouseEvent);
 }
