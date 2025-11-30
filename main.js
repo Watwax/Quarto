@@ -160,6 +160,11 @@ window.addEventListener('load', (event) => {
 
 // Function to animate the scene
 function animate() {
+    if(gameOver) {
+        controls.update();
+        renderer.render(scene, camera);
+        return;
+    }
 
     raycaster.setFromCamera(mouse, camera);
 
@@ -388,6 +393,7 @@ function displayWinner(result, winningGroup) {
     });
 
     window.removeEventListener('mousedown', mouseEvent);
+    gameOver = true;
 }
 
 // Display draw
@@ -396,4 +402,5 @@ function displayDraw() {
     ui.innerText = `Match Nul`;
 
     window.removeEventListener('mousedown', mouseEvent);
+    gameOver = true;
 }
