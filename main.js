@@ -394,6 +394,7 @@ function displayWinner(result, winningGroup) {
 
     window.removeEventListener('mousedown', mouseEvent);
     gameOver = true;
+    reduceCanva();
 }
 
 // Display draw
@@ -403,4 +404,17 @@ function displayDraw() {
 
     window.removeEventListener('mousedown', mouseEvent);
     gameOver = true;
+    reduceCanva();
+}
+
+// To remove canva and display the end of the match
+function reduceCanva() {
+    renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+
+    const canva = document.querySelector('canvas');
+    canva.classList.add('moveToBottom');
+
+    const player = document.getElementById('player');
+    player.classList.add('moveToBottom');
+    player.style.fontSize = '4em';
 }
