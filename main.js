@@ -215,12 +215,7 @@ function animate() {
     }
 
     if (!hoveredSomething) {
-        if (hoveredPion) {
-            console.log(hoveredPion.userData.selected);
-            hoveredPion.userData.changeSelection();
-            console.log(hoveredPion.userData.selected);
-            hoveredPion.userData.restoreColor();
-        }
+        if (hoveredPion) hoveredPion.userData.restoreColor();
         hoveredPion = null;
 
         if (hoveredCase) hoveredCase.unhighlight();
@@ -276,12 +271,10 @@ function mouseEvent(){
 
         if(selectedPion != null) {
             selectedPion.moveTo([selectedPion.position[0], selectedPion.position[2]], selectedPion.position[1]);
-            selectedPion.selected = false;
         }
         selectedPion = pionList.find(p => p.object3D === obj.parent);
 
         selectedPion.moveTo([selectedPion.position[0], selectedPion.position[2]], selectedPion.position[1] + 5);
-        selectedPion.selected = true;
 
         game.onSelectPiece();
         return;
