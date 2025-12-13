@@ -5,6 +5,8 @@ export class Case {
         this.scene = scene;
         this.coord = coord;
         this.occupiedBy = null; 
+        this.row = null;
+        this.col = null;
 
         const geometry = new THREE.PlaneGeometry(size, size);
         const material = new THREE.MeshBasicMaterial({

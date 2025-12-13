@@ -39,8 +39,6 @@ export class Pion {
         this.pawnHeight = null;
         this.pawnType = null;
         this.loadPawn();
-
-        this.placed = false;
     }
 
     loadModel() {

@@ -38,6 +38,15 @@ const N_C = [
     [25,15],
 ]
 
+// The board array
+const board = [
+  [null, null, null, null],
+  [null, null, null, null],
+  [null, null, null, null],
+  [null, null, null, null],
+];
+
+
 // List of pawn
 const pawnNames = [
     'brbh',
@@ -97,6 +106,7 @@ let selectedPion = null;
 
 // To manage game turn
 const game = new GamePlayer("player");
+let gameOver = false;
 
 // To get mouse position
 window.addEventListener('mousemove', (event) => {
@@ -138,8 +148,11 @@ window.addEventListener('load', (event) => {
 
     for (let i = 0; i < P_C.length; i++) {
         for (let j = 0; j < P_C[i].length; j++) {
-            const c = new Case(scene, P_C[i][j], + 9.65, 3);
+            const c = new Case(scene, P_C[i][j], 9.65, 3);
+            c.row = i;
+            c.col = j;
             caseList.push(c);
+            board[i][j] = c;
         }
     }
 }); 
@@ -147,6 +160,11 @@ window.addEventListener('load', (event) => {
 
 // Function to animate the scene
 function animate() {
+    if(gameOver) {
+        controls.update();
+        renderer.render(scene, camera);
+        return;
+    }
 
     raycaster.setFromCamera(mouse, camera);
 
@@ -235,7 +253,9 @@ function addOBJwithMTL(objName, coordinates = [0, 0, 0], scale = 1) {
 }
 
 // To select a pawn and a case to play
-window.addEventListener('mousedown', () => {
+window.addEventListener('mousedown', mouseEvent);
+
+function mouseEvent(){
     raycaster.setFromCamera(mouse, camera);
 
     const intersects = raycaster.intersectObjects(
@@ -254,16 +274,9 @@ window.addEventListener('mousedown', () => {
         }
         selectedPion = pionList.find(p => p.object3D === obj.parent);
 
-        if (selectedPion.placed === true) {
-            selectedPion = null;
-            return;
-        }
-
         selectedPion.moveTo([selectedPion.position[0], selectedPion.position[2]], selectedPion.position[1] + 5);
 
         game.onSelectPiece();
-
-        console.log("Pion sélectionné :", selectedPion.objName);
         return;
     }
 
@@ -271,12 +284,10 @@ window.addEventListener('mousedown', () => {
         const targetCase = obj.userData.case;
 
         if (targetCase.occupiedBy !== null) {
-            console.log("Cette case est déjà occupée !");
             return;
         }
 
         selectedPion.moveTo(targetCase.coord, PLATE_HEIGHT);
-        selectedPion.placed = true;
         pionList.splice(pionList.indexOf(selectedPion), 1);
 
         targetCase.occupiedBy = selectedPion;
@@ -286,7 +297,118 @@ window.addEventListener('mousedown', () => {
 
         selectedPion = null;
         game.onPlacePiece();
+        checkVictory(targetCase);
         return;
     }
+}
 
-});
+// To play and win 
+function getGroupsToCheck(row, col) {
+    const groups = [];
+
+    // Line
+    groups.push([board[row][0], board[row][1], board[row][2], board[row][3]]);
+
+    // Column
+    groups.push([board[0][col], board[1][col], board[2][col], board[3][col]]);
+
+    // Diagonals
+    if (row === col) {
+        groups.push([board[0][0], board[1][1], board[2][2], board[3][3]]);
+    }
+    if (row + col === 3) {
+        groups.push([board[0][3], board[1][2], board[2][1], board[3][0]]);
+    }
+
+    return groups;
+}
+
+// Check if a group of coordinates are similar
+function checkSimilarityOnGroup(group) {
+    const pawns = group.map(c => c.occupiedBy);
+
+    if (pawns.some(p => p === null || p === undefined)) return false;
+
+    const attributes = ['pawnColor', 'pawnShape', 'pawnHeight', 'pawnType'];
+
+    for (const attr of attributes) {
+        const first = pawns[0][attr];
+        if (pawns.every(p => p[attr] === first)) {
+            return { attribute: attr, value: first, pawns };
+        }
+    }
+
+    return false;
+}
+
+// Check if the pawn give the victory to the player
+function checkVictory(targetCase) {
+    if (!targetCase || targetCase.row === undefined || targetCase.col === undefined) return false;
+
+    const row = targetCase.row;
+    const col = targetCase.col;
+
+    const groups = getGroupsToCheck(row, col);
+
+    for (const group of groups) {
+        const res = checkSimilarityOnGroup(group);
+        if (res) {
+            displayWinner(res, group);
+            return true;
+        }
+    }
+    if(pionList.length == 0) {
+        displayDraw();
+    }
+
+    return false;
+}
+
+// Display the winner and the winning line/column/diagonal
+function displayWinner(result, winningGroup) {
+    const ui = document.getElementById('player');
+    const current = game.opponentPlayer || 'Joueur';
+
+    ui.innerText = `${current} a gagné ! (${result.attribute} = ${result.value})`;
+
+    winningGroup.forEach(c => {
+        if (c && c.mesh && c.mesh.material) {
+            c.mesh.material.opacity = 0.5;
+            c.mesh.material.color.set(0xffff00);
+        }
+        if (c.occupiedBy && c.occupiedBy.object3D) {
+            c.occupiedBy.object3D.traverse(child => {
+                if (child.isMesh) {
+                    child.material = child.material.clone();
+                    child.material.color.set(0xffff00);
+                }
+            });
+        }
+    });
+
+    window.removeEventListener('mousedown', mouseEvent);
+    gameOver = true;
+    reduceCanva();
+}
+
+// Display draw
+function displayDraw() {
+    const ui = document.getElementById('player');
+    ui.innerText = `Match Nul`;
+
+    window.removeEventListener('mousedown', mouseEvent);
+    gameOver = true;
+    reduceCanva();
+}
+
+// To remove canva and display the end of the match
+function reduceCanva() {
+    renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+
+    const canva = document.querySelector('canvas');
+    canva.classList.add('moveToBottom');
+
+    const player = document.getElementById('player');
+    player.classList.add('moveToBottom');
+    player.style.fontSize = '4em';
+}
