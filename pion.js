@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+import { OBJLoader } from 'three-stdlib';
+import { MTLLoader } from 'three-stdlib';
 
 // Enumeration of caracteristics of pawn
 const enumPawnColor = {
@@ -43,13 +43,13 @@ export class Pion {
 
     loadModel() {
         const mtlLoader = new MTLLoader();
-        mtlLoader.setPath('models/');
+        mtlLoader.setPath('./models/');
         mtlLoader.load(this.objName + '.mtl', (materials) => {
             materials.preload();
 
             const objLoader = new OBJLoader();
             objLoader.setMaterials(materials);
-            objLoader.setPath('models/');
+            objLoader.setPath('./models/');
 
             objLoader.load(
                 this.objName + '.obj',
