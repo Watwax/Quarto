@@ -1,8 +1,14 @@
 {
   "dependencies": {
-    "three": "^0.181.0"
+    "parcel": "^2.16.3",
+    "three": "^0.182.0",
+    "three-stdlib": "^2.36.1"
   },
   "devDependencies": {
+    "buffer": "^6.0.3",
     "vite": "^7.1.12"
+  },
+  "scripts": {
+    "build": "npx parcel build main.js --no-source-maps --no-cache"
   }
 }
