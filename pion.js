@@ -1,6 +1,5 @@
-import * as THREE from 'three';
-import { OBJLoader } from 'three-stdlib';
-import { MTLLoader } from 'three-stdlib';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 
 // Enumeration of caracteristics of pawn
 const enumPawnColor = {

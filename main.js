@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { OBJLoader } from 'three-stdlib';
-import { MTLLoader } from 'three-stdlib';
-import { OrbitControls } from 'three-stdlib';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Pion } from './pion.js';
 import { Case } from './case.js';
 import { GamePlayer } from './gamePlayer.js';
