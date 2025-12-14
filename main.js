@@ -389,6 +389,7 @@ function displayWinner(result, winningGroup) {
     window.removeEventListener('mousedown', mouseEvent);
     gameOver = true;
     reduceCanva();
+    addBtnRestart();
 }
 
 // Display draw
@@ -399,6 +400,7 @@ function displayDraw() {
     window.removeEventListener('mousedown', mouseEvent);
     gameOver = true;
     reduceCanva();
+    addBtnRestart();
 }
 
 // To remove canva and display the end of the match
@@ -411,4 +413,17 @@ function reduceCanva() {
     const player = document.getElementById('player');
     player.classList.add('moveToBottom');
     player.style.fontSize = '4em';
+}
+
+function addBtnRestart() {
+    const body = document.querySelector('body');
+    const btnRestart = document.createElement('button');
+    btnRestart.innerText = "Relancer une partie";
+    btnRestart.addEventListener('click', restartGame);
+    body.append(btnRestart);
+}
+
+
+function restartGame() {
+    location.reload();
 }
