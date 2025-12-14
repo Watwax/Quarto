@@ -140,6 +140,8 @@ function shuffle(array) {
 
 // Add pawns
 window.addEventListener('load', (event) => {
+    document.querySelector('canvas').style.display = "none";
+    document.getElementById('beginGame').onclick = beginGame;
     shuffle(pawnNames);
     pawnNames.forEach((pawnName, index) => {
         let pion = new Pion(scene, 'pion_' + pawnName, N_C[index], 1, 0);
@@ -423,7 +425,13 @@ function addBtnRestart() {
     body.append(btnRestart);
 }
 
-
 function restartGame() {
     location.reload();
+}
+
+function beginGame() {
+    console.log("test");
+    document.querySelector('canvas').style.display = "block";
+    const menu = document.querySelector('.menu');
+    menu.style.display = "none";
 }
