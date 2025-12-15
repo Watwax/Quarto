@@ -417,20 +417,23 @@ function reduceCanva() {
     player.style.fontSize = '4em';
 }
 
+// To add the button to restart the game (by reloading)
 function addBtnRestart() {
-    const body = document.querySelector('body');
     const btnRestart = document.createElement('button');
     btnRestart.innerText = "Relancer une partie";
     btnRestart.addEventListener('click', restartGame);
+
+    const body = document.querySelector('body');
     body.append(btnRestart);
 }
 
+// reload the page to restart the game
 function restartGame() {
     location.reload();
 }
 
+// To begin the game when the button is pressed
 function beginGame() {
-    console.log("test");
     document.querySelector('canvas').style.display = "block";
     const menu = document.querySelector('.menu');
     menu.style.display = "none";
