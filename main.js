@@ -142,6 +142,8 @@ function shuffle(array) {
 window.addEventListener('load', (event) => {
     document.querySelector('canvas').style.display = "none";
     document.getElementById('beginGame').onclick = beginGame;
+    document.getElementById('rules').onclick = openRules;
+    document.getElementById('rulesInfoQuit').onclick = closeRules;
     shuffle(pawnNames);
     pawnNames.forEach((pawnName, index) => {
         let pion = new Pion(scene, 'pion_' + pawnName, N_C[index], 1, 0);
@@ -437,4 +439,12 @@ function beginGame() {
     document.querySelector('canvas').style.display = "block";
     const menu = document.querySelector('.menu');
     menu.style.display = "none";
+}
+
+function openRules() {
+    document.querySelector('#rulesInfo').style.display = "flex";
+}
+
+function closeRules() {
+    document.querySelector('#rulesInfo').style.display = "none";
 }

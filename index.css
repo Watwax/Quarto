@@ -33,6 +33,48 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+#rulesInfo {
+    position: absolute;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 2;
+    background-color: #f5edd0;
+    border: solid 2px black;
+    height: 70%;
+    width: 50%;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#rulesInfoQuit {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    border-radius: 20%;
+    padding: 10px;
+    margin: 0;
+}
+
+#rulesInfoQuit:active {
+    background-color: darkred;
+
+}
+
+#rulesInfo h1 {
+    font-size: 2em;
+    padding: 0px 20px;
+}
+
+#rulesInfo div {
+    padding: 0px 20px 20px 20px;
+}
+
+#rulesInfo div p{
+    margin: 0px;
+}
+
 #player {
     position: absolute;
     text-align: center;
