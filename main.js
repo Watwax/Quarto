@@ -275,9 +275,12 @@ function mouseEvent(){
 
         if(selectedPion != null) {
             selectedPion.moveTo([selectedPion.position[0], selectedPion.position[2]], selectedPion.position[1]);
+            selectedPion.selected = false;
+            selectedPion.object3D.userData.restoreColor();
         }
         selectedPion = pionList.find(p => p.object3D === obj.parent);
 
+        selectedPion.selected = true;
         selectedPion.moveTo([selectedPion.position[0], selectedPion.position[2]], selectedPion.position[1] + 5);
 
         game.onSelectPiece();
@@ -295,10 +298,11 @@ function mouseEvent(){
         pionList.splice(pionList.indexOf(selectedPion), 1);
 
         targetCase.occupiedBy = selectedPion;
-        selectedPion.onCase = targetCase;
 
         targetCase.unhighlight();
 
+        selectedPion.selected = false;
+        selectedPion.object3D.userData.restoreColor();
         selectedPion = null;
         game.onPlacePiece();
         checkVictory(targetCase);
