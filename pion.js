@@ -38,6 +38,8 @@ export class Pion {
         this.pawnHeight = null;
         this.pawnType = null;
         this.loadPawn();
+
+        this.selected = false;
     }
 
     loadModel() {
@@ -69,7 +71,7 @@ export class Pion {
                     // To add color when hover
                     object.userData.highlight = () => {
                         object.traverse((child) => {
-                            if (child.isMesh && !this.placed) {
+                            if (child.isMesh) {
                                 child.material = child.material.clone();
                                 child.material.color.set(0xff0000);
                             }
@@ -78,9 +80,11 @@ export class Pion {
 
                     // To restore the original color
                     object.userData.restoreColor = () => {
-                        this.originalMaterials.forEach((entry) => {
-                            entry.mesh.material = entry.material.clone();
-                        });
+                        if(!this.selected) {
+                            this.originalMaterials.forEach((entry) => {
+                                entry.mesh.material = entry.material.clone();
+                            });
+                        }
                     };
 
                     this.object3D = object;
