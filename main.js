@@ -78,7 +78,12 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     1000
 );
-camera.position.set(0, 28, 0);
+if (window.screen.width <= window.screen.height) {
+    camera.position.set(-30, 75, 30);
+    document.getElementById('infoMobile').style.display = "block";
+} else {
+    camera.position.set(0, 28, 0);
+}
 camera.lookAt(P_C[2][2][0], PLATE_HEIGHT, P_C[2][2][1]);
 
 // Renderer
@@ -145,8 +150,9 @@ window.addEventListener('load', (event) => {
     document.getElementById('rules').onclick = openRules;
     document.getElementById('rulesInfoQuit').onclick = closeRules;
     shuffle(pawnNames);
+    heightMobile = (window.screen.width <= window.screen.height ? 6 : 0);
     pawnNames.forEach((pawnName, index) => {
-        let pion = new Pion(scene, 'pion_' + pawnName, N_C[index], 1, 0);
+        let pion = new Pion(scene, 'pion_' + pawnName, N_C[index], 1, heightMobile);
         pionList.push(pion);
     });
 
